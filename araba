@@ -1,0 +1,124 @@
+int veri; // Uygulamada hangi tuşa bastığımızın verisini okur
+#include<Servo.h> // Servo Motoru kullanmak için kütüphaneyi etkinleştiriyoruz
+int led = 8; // 8. pindeki ön farlarımıza led adını veriyoruz
+int led2 = 9;   // 9. pindeki arka farlarımıza led2 adını veriyoruz                      
+const int sagon = 4; // Sağ tekerimizin ileri gitmesini sağlayan pin
+const int saggeri = 5; // Sağ tekerimizin geri gitmesini sağlayan pin
+const int solon = 7; // Sol tekerimizin ileri gitmesini sağlayan pin
+const int solgeri = 6; // Sol tekerimizin geri gitmesini sağlayan pin
+int buzzerPin = 12; // 12. pine taktığımız buzzere buzzerPin adını veriyoruz
+int C_ = 294; // Buzzerin çıkaracağı tonu belirtiyoruz
+Servo servo1; // 1. servomuzu tanımlıyoruz
+Servo servo2; // 2. servomuzu tanımlıyoruz
+void setup() {
+  Serial.begin(9600); // Seri haberleşmeyi başlatıyoruz
+  servo1.attach(10); // 1. servomuzun 10. pinde olduğunu belirtiyoruz
+  servo2.attach(11); // 2. servomuzun 11. pinde olduğunu belirtiyoruz             
+  pinMode(led,OUTPUT);  // ledimizi çıkış pini olarak belirliyoruz  
+  pinMode(led2,OUTPUT);  // ledimizi çıkış pini olarak belirliyoruz   
+  pinMode(sagon, OUTPUT); // motorumuzu çıkış pini olarak belirliyoruz  
+  pinMode(saggeri, OUTPUT);// motorumuzu çıkış pini olarak belirliyoruz  
+  pinMode(solon, OUTPUT);// motorumuzu çıkış pini olarak belirliyoruz  
+  pinMode(solgeri, OUTPUT);// motorumuzu çıkış pini olarak belirliyoruz  
+  noTone(buzzerPin); // Buzzerimizin başladığında ses çıkarmamasını sağlıyoruz
+  
+}
+void loop() {
+
+  if(Serial.available()>0){  // Uygulamada herhangi bir tuşa basıp basmadığımızı kontrol ettiriyoruz
+    veri = Serial.read();   // Basılan tuşa "veri" adını veriyoruz 
+  }
+  if(veri == 'W'){    // veri W'ye eşit ise ön farımızın yanmasını sağlıyoruz         
+    digitalWrite(led,HIGH);
+
+  }
+  else if(veri == 'U'){    // veri U'ye eşit arka farımızın yanmasını sağlıyoruz               
+    digitalWrite(led2,HIGH);
+  }
+  else if(veri == 'w'){      // veri w'ye eşit ise ön farımızın söndürmesini sağlıyoruz            
+    digitalWrite(led,LOW);
+  }
+  else if(veri == 'u'){      // veri u'ye eşit ise arka farımızın sönmesini sağlıyoruz              
+    digitalWrite(led2,LOW);
+  }
+  if(veri == 'F'){      // veri F'ye eşit ise aracımızın düz gitmesini sağlıyoruz             
+  digitalWrite(sagon, HIGH);
+  digitalWrite(saggeri, LOW);
+  digitalWrite(solon, HIGH);
+  digitalWrite(solgeri, LOW);
+  }
+  else if(veri == 'B'){       // veri B'ye eşit ise aracımızın geri gitmesini sağlıyoruz            
+  digitalWrite(sagon, LOW);
+  digitalWrite(saggeri, HIGH);
+  digitalWrite(solon, LOW);
+  digitalWrite(solgeri, HIGH);
+  }
+  else if(veri == 'R'){      // veri R'ye eşit ise aracımızın sağa dönmesini sağlıyoruz             
+  digitalWrite(sagon, LOW);
+  digitalWrite(saggeri, HIGH);
+  digitalWrite(solon, HIGH);
+  digitalWrite(solgeri, LOW);
+  }
+  else if(veri == 'L'){        // veri L'ye eşit ise aracımızın sola dönmesini sağlıyoruz           
+  digitalWrite(sagon, HIGH);
+  digitalWrite(saggeri, LOW);
+  digitalWrite(solon, LOW);
+  digitalWrite(solgeri, HIGH);
+  }
+    else if(veri == 'G'){      // veri G'ye eşit ise aracımızın düz giderken sola dönmesini sağlıyoruz             
+  digitalWrite(sagon, HIGH);
+  digitalWrite(saggeri, LOW);
+  delay(10);
+  digitalWrite(solon, LOW);
+  digitalWrite(solgeri, HIGH);
+  }
+      else if(veri == 'I'){      // veri I'ye eşit ise aracımızın düz giderken sağa dönmesini sağlıyoruz             
+  digitalWrite(solon, HIGH);
+  digitalWrite(solgeri, LOW);
+  delay(10);
+  digitalWrite(sagon, LOW);
+  digitalWrite(saggeri, HIGH);
+  }
+      else if(veri == 'H'){       // veri H'ye eşit ise aracımızın geri giderken sola dönmesini sağlıyoruz            
+  digitalWrite(sagon, LOW);
+  digitalWrite(saggeri, HIGH);
+  delay(10);
+  digitalWrite(solon, HIGH);
+  digitalWrite(solgeri, LOW);
+  }
+      else if(veri == 'J'){      // veri J'ye eşit ise aracımızın geri giderken sağa dönmesini sağlıyoruz             
+  digitalWrite(solon, LOW);
+  digitalWrite(solgeri, HIGH);
+  delay(10);
+  digitalWrite(sagon, HIGH);
+  digitalWrite(saggeri, LOW);
+  }
+  else{                        // veri hiçbir şeye eşit değilse aracımızın durmasını sağlıyoruz    
+  digitalWrite(sagon, LOW);
+  digitalWrite(saggeri, LOW);
+  digitalWrite(solon, LOW);
+  digitalWrite(solgeri, LOW);
+  }
+    if(veri == 'V'){    // veri V'ye eşit ise buzzer'in ötmesini sağlıyoruz            
+      
+  tone(buzzerPin, C_);
+  
+  }
+  else if(veri == 'v'){   // veri v'ye eşit ise buzzer'in susmasını sağlıyoruz            
+    
+  noTone(buzzerPin);
+
+  }
+      if(veri == 'X'){   // veri X'ye eşit ise kıskacımızın açılmasını sağlıyoruz              
+  servo1.write(160);    
+  servo2.write(20);
+  }
+  else if(veri == 'x'){   // veri x'ye eşit ise kıskacımızın kapanmasını sağlıyoruz          
+  servo1.write(180);  
+  servo2.write(0);
+  }
+    else {         // veri hiçbir şeye eşit değilse servo motorlarımızı kapalı konuma getirmesini sağlıyoruz      
+  servo1.write(180);  
+  servo2.write(0);
+  }
+}
